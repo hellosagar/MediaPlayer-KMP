@@ -47,6 +47,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(project(":mediaplayer-kmp"))
+            implementation(compose.material3)
         }
 
         androidMain.dependencies {
