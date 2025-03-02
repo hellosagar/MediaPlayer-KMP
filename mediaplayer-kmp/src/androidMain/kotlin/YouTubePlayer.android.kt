@@ -222,7 +222,7 @@ fun YoutubeVideoPlayer(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    val activity = context as Activity
+    val activity = context.findComponentActivity()
     val videoId = extractVideoId(youtubeURL)
     val startTimeInSeconds = extractStartTime(youtubeURL)
 
@@ -242,10 +242,10 @@ fun YoutubeVideoPlayer(
             fullscreenView = view
             playerView.visibility = View.GONE
 
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
             Handler(Looper.getMainLooper()).post {
-                (activity.window.decorView as ViewGroup).addView(view)
+                (activity?.window?.decorView as ViewGroup).addView(view)
                 configureFullScreen(activity, true)
             }
             player?.play()
@@ -255,13 +255,15 @@ fun YoutubeVideoPlayer(
             isFullScreen = false
             playerView.visibility = View.VISIBLE
             fullscreenView?.let { view ->
-                (activity.window.decorView as ViewGroup).removeView(view)
+                (activity?.window?.decorView as ViewGroup).removeView(view)
                 fullscreenView = null
             }
 
             Handler(Looper.getMainLooper()).post {
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                configureFullScreen(activity, false)
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                activity?.let {
+                    configureFullScreen(activity, false)
+                }
             }
             player?.play()
         }
